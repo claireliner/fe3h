@@ -183,14 +183,14 @@ impl Save {
             return *save;
         }
     }
-    pub fn get_activity_data() -> &'static ActivityData {
+    pub fn get_activity_data() -> &'static mut ActivityData {
         let save = Self::get_instance();
-        return &save.activities;
+        unsafe { return &mut save.activities; {
     }
 
-    pub fn get_player_data() -> &'static PlayerData {
+    pub fn get_player_data() -> &'static mut PlayerData {
         let save = Self::get_instance();
-        return &save.player;
+        unsafe { return &mut save.player;}
     }
 
     pub fn setup_unit_recruitment(&self, character_id: i32, map_id: i32, battalion: bool) {
