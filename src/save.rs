@@ -105,6 +105,7 @@ pub struct ActivityData {
     pub misc_item_shop_stock: [u8; 30],
 }
 
+#[derive(Debug)]
 #[repr(u8)]
 pub enum ProfRank {
     E,
@@ -119,6 +120,7 @@ pub enum ProfRank {
     Aplus,
 }
 
+#[derive(Debug)]
 #[repr(u8)]
 pub enum GroupTask {
     Stable = 0,
@@ -126,6 +128,7 @@ pub enum GroupTask {
     SkyWatch = 6,
 }
 
+#[derive(Debug)]
 #[repr(u16)]
 pub enum Character {
     MByleth,
