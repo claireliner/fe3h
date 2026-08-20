@@ -105,7 +105,7 @@ pub struct ActivityData {
     pub misc_item_shop_stock: [u8; 30],
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, PartialOrd)]
 #[repr(u8)]
 pub enum ProfRank {
     E,
