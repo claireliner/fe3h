@@ -1,6 +1,6 @@
 use person::SkillGoals;
 
-use crate::{save::*, gamedata::*};
+use crate::{gamedata::*, save::*};
 
 #[skyline::from_offset(0x001db680)]
 pub fn is_monastery() -> bool;
@@ -24,7 +24,7 @@ pub struct BattleUnit {
     pub inventory: [UnitItem; 6],
     pub battalion: UnitBattalion,
     pub seed: u32,
-    pub character: i16,
+    pub character: Character,
     pub unk_0x26: i16,
     pub unk_0x28: i16,
     pub unk_0x2a: i16,
@@ -70,6 +70,57 @@ pub struct BattleUnit {
     pub defeat_text: u8,
     pub acted: u8,
     pub faction: u8,
+}
+
+#[derive(Debug)]
+#[repr(u16)]
+pub enum Character {
+    MByleth,
+    FByleth,
+    Edelgard,
+    Dimitri,
+    Claude,
+    Hubert,
+    Ferdinand,
+    Linhardt,
+    Caspar,
+    Bernadetta,
+    Dorothea,
+    Petra,
+    Dedue,
+    Felix,
+    Ashe,
+    Sylvain,
+    Mercedes,
+    Annette,
+    Ingrid,
+    Lorenz,
+    Raphael,
+    Ignatz,
+    Lysithea,
+    Marianne,
+    Hilda,
+    Leonie,
+    Seteth,
+    Flayn,
+    Hanneman,
+    Manuela,
+    Gilbert,
+    Alois,
+    Catherine,
+    Shamir,
+    Cyril,
+    Jeralt,
+    Rhea,
+    Sothis,
+    //skipped npcs
+    Yuri = 1040,
+    Balthus = 1041,
+    Constance = 1042,
+    Hapi = 1043,
+    Aelfric = 1044,
+    Jeritza = 1045,
+    Anna = 1046,
 }
 
 #[repr(C)]
@@ -131,7 +182,7 @@ pub struct Unit {
     pub adjutant_id: u16,
     pub skill_exp2: [u16; 11],
     pub class_exp: [u16; 97],
-    pub seeded: u32,    // secret seed
+    pub seeded: u32, // secret seed
     pub __: i16,
     pub deploy_index: i8,
     pub deploy_slot: i8,
@@ -147,7 +198,7 @@ pub struct UnitClass {
     pub unk_0xd: u8,
     pub unk_0xe: u8,
     pub class_unlock_flags: [u8; 8],
-    pub goal: u8, 
+    pub goal: u8,
     pub goals_flag: u8,
     pub month_tea_charm: u8,
     pub tea_charm: u8,
@@ -158,35 +209,60 @@ pub struct UnitClass {
 }
 
 impl Unit {
-    pub fn add_motivation(&self, value: u8) { unsafe { unit_add_motivation(self, value) }; }
-    pub fn learn_ability(&self, ability: i32) {  unsafe { unit_learn_ability(self, ability) }; }
-    pub fn learn_combat_art(&self, combat_art: i32) { unsafe { unit_learn_combat_art(&self, combat_art)}; }
-    pub fn learn_from_ranks(&self, param2: u64) {  unsafe { unit_learn_from_ranks(self, param2)}; }
-    pub fn cert_into_class(&self, class: i32) { unsafe { unit_cert_class(&self.class_related_stuff, class, true)}; }
-    pub fn has_class(&self, class: i32) -> bool {  unsafe { has_cert(&self.class_related_stuff, class)}  }
-    pub fn add_item(&self, item: i32) { unsafe { unit_add_item(self, item)}; }
-    pub fn gain_skill_exp(&self, skill: i32, earn: i32) { unsafe { unit_gain_skill_exp(self, skill, earn)}; }
+    pub fn add_motivation(&self, value: u8) {
+        unsafe { unit_add_motivation(self, value) };
+    }
+    pub fn learn_ability(&self, ability: i32) {
+        unsafe { unit_learn_ability(self, ability) };
+    }
+    pub fn learn_combat_art(&self, combat_art: i32) {
+        unsafe { unit_learn_combat_art(&self, combat_art) };
+    }
+    pub fn learn_from_ranks(&self, param2: u64) {
+        unsafe { unit_learn_from_ranks(self, param2) };
+    }
+    pub fn cert_into_class(&self, class: i32) {
+        unsafe { unit_cert_class(&self.class_related_stuff, class, true) };
+    }
+    pub fn has_class(&self, class: i32) -> bool {
+        unsafe { has_cert(&self.class_related_stuff, class) }
+    }
+    pub fn add_item(&self, item: i32) {
+        unsafe { unit_add_item(self, item) };
+    }
+    pub fn gain_skill_exp(&self, skill: i32, earn: i32) {
+        unsafe { unit_gain_skill_exp(self, skill, earn) };
+    }
     pub fn get_ability_parameter(&self, ability_parameter: i32) -> i32 {
         unsafe { get_unit_ability_parameter(self, ability_parameter) }
     }
 
     pub fn grant_battalion(&self, battalion_id: i32, equip: bool) {
         let save = Save::get_instance();
-        unsafe { grant_unit_battalion(save, self, battalion_id, equip); }
-
+        unsafe {
+            grant_unit_battalion(save, self, battalion_id, equip);
+        }
     }
 
     pub fn reclass(&self, class: i32, param3: bool, param4: u64, param5: u64) {
-        unsafe { unit_reclass(self, class, param3, param4, param5)};
+        unsafe { unit_reclass(self, class, param3, param4, param5) };
     }
-    pub fn level_up(&self, to_level: i32) { unsafe { unit_level(self, to_level);} }
+    pub fn level_up(&self, to_level: i32) {
+        unsafe {
+            unit_level(self, to_level);
+        }
+    }
     pub fn set_class_mastered(&self, class: u8) {
-        unsafe { unit_set_class_level(self, class, true); }
+        unsafe {
+            unit_set_class_level(self, class, true);
+        }
     }
     pub fn toggle_budding_talent(&self, skill: u8, enable: bool) {
-        unsafe { unit_enable_budding_talent(self, skill, enable); }
+        unsafe {
+            unit_enable_budding_talent(self, skill, enable);
+        }
     }
-    pub fn has_budding_talent(&self, skill: u8) -> bool { 
+    pub fn has_budding_talent(&self, skill: u8) -> bool {
         unsafe { unit_has_budding_talent(self, skill) }
     }
 
@@ -197,13 +273,16 @@ impl Unit {
 }
 
 impl BattleUnit {
-    pub fn learn_ability(&self, ability: i32) {  unsafe { unit_learn_ability2(self, ability) }; }
-    pub fn equip_ability(&self, slot: i32, ability: i32) {  unsafe { unit_equip_ability(self, slot, ability) }; }
+    pub fn learn_ability(&self, ability: i32) {
+        unsafe { unit_learn_ability2(self, ability) };
+    }
+    pub fn equip_ability(&self, slot: i32, ability: i32) {
+        unsafe { unit_equip_ability(self, slot, ability) };
+    }
 }
 
-
 #[skyline::from_offset(0x004149f0)]
-pub fn has_cert(class: &UnitClass, class_id: i32) -> bool; 
+pub fn has_cert(class: &UnitClass, class_id: i32) -> bool;
 
 #[skyline::from_offset(0x003d2a10)]
 pub fn unit_cert_class(class_stuff: &UnitClass, class_id: i32, equip: bool);
@@ -242,7 +321,7 @@ pub fn get_unit_ability_parameter(unit: &Unit, ability_index: i32) -> i32;
 pub fn unit_level(unit: &Unit, level: i32);
 
 #[skyline::from_offset(0x00415420)]
-pub fn unit_set_class_level(unit: &Unit, class: u8, level :bool);
+pub fn unit_set_class_level(unit: &Unit, class: u8, level: bool);
 
 #[skyline::from_offset(0x003e0250)]
 pub fn unit_add_motivation(unit: &Unit, value: u8);

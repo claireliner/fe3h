@@ -128,57 +128,6 @@ pub enum GroupTask {
     SkyWatch = 6,
 }
 
-#[derive(Debug)]
-#[repr(u16)]
-pub enum Character {
-    MByleth,
-    FByleth,
-    Edelgard,
-    Dimitri,
-    Claude,
-    Hubert,
-    Ferdinand,
-    Linhardt,
-    Caspar,
-    Bernadetta,
-    Dorothea,
-    Petra,
-    Dedue,
-    Felix,
-    Ashe,
-    Sylvain,
-    Mercedes,
-    Annette,
-    Ingrid,
-    Lorenz,
-    Raphael,
-    Ignatz,
-    Lysithea,
-    Marianne,
-    Hilda,
-    Leonie,
-    Seteth,
-    Flayn,
-    Hanneman,
-    Manuela,
-    Gilbert,
-    Alois,
-    Catherine,
-    Shamir,
-    Cyril,
-    Jeralt,
-    Rhea,
-    Sothis,
-    //skipped npcs
-    Yuri = 1040,
-    Balthus = 1041,
-    Constance = 1042,
-    Hapi = 1043,
-    Aelfric = 1044,
-    Jeritza = 1045,
-    Anna = 1046,
-}
-
 impl Save {
     pub fn get_instance() -> &'static mut Save {
         let save = crate::gamedata::offset_to_addr::<&mut Save>(0x01b12190);
